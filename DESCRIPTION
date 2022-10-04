@@ -10,3 +10,5 @@ License: What license is it under?
 Imports: Rcpp (>= 1.0.7)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.1.2
+URL: https://github.com/alex-zdz/shrinksv
+BugReports: https://github.com/alex-zdz/shrinksv/issues
