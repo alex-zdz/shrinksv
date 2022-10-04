@@ -29,3 +29,7 @@ backward_algorithm <- function(chol_diag, chol_offdiag, htmp) {
     .Call(`_shrinksv_backward_algorithm`, chol_diag, chol_offdiag, htmp)
 }
 
+draw_latent_1 <- function(data, mu, phi, sigma, r, mix_mean, mix_varinv) {
+    .Call(`_shrinksv_draw_latent_1`, data, mu, phi, sigma, r, mix_mean, mix_varinv)
+}
+

@@ -101,3 +101,134 @@ arma::vec backward_algorithm(
     }
     return h;
 }
+
+// [[Rcpp::export]]
+Rcpp::List draw_latent_1(
+    const arma::vec& data,
+    const double mu,
+    const double phi,
+    const double sigma,
+    const arma::uvec& r,
+    const arma::vec& mix_mean,
+    const arma::vec& mix_varinv){
+    // const PriorSpec& prior_spec,
+    // const ExpertSpec_FastSV& expert){
+    const arma::vec& y = data;  // rename
+    const unsigned int T = y.n_elem;
+    
+    double omega_offdiag;  // contains off-diag element of precision matrix (const)
+    arma::vec omega_diag(T+1),  // contains diagonal elements of precision matrix
+    covector(T+1);  // holds covector (see McCausland et al. 2011)
+    const double sigma2 = std::pow(sigma, 2),
+                 sigma2inv = 1. / sigma2,
+                 // Bh0inv = determine_Bh0inv(phi, prior_spec);
+                 phi2 = std::pow(phi, 2),
+                 Bh0inv = (1- phi2);
+        
+        omega_diag[0] =  sigma2inv;
+        covector[0] = mu * (1-phi) * sigma2inv;
+        
+        for (unsigned int j = 1; j < T; j++) {
+            omega_diag[j] = mix_varinv[r[j-1]] + (1+phi2)*sigma2inv; 
+            covector[j] = (data[j-1] - mix_mean[r[j-1]])*mix_varinv[r[j-1]]
+            + mu*(1-phi)*(1-phi)*sigma2inv;
+        }
+        omega_diag[T] = mix_varinv[r[T-1]] + sigma2inv;
+        covector[T] = (data[T-1] - mix_mean[r[T-1]])*mix_varinv[r[T-1]] + mu*(1-phi)*sigma2inv;
+        omega_offdiag = -phi*sigma2inv;
+        Rcpp::List Omega_ret;
+        Omega_ret["Omega_diag"] = omega_diag;
+        Omega_ret["Omega_offdiag"] = omega_offdiag;
+        Omega_ret["covector"] = covector;
+        return Omega_ret;
+        // return omega_offdiag;
+}
+
+// Rcpp::List chol_ret;
+// chol_ret["chol_diag"] = chol_diag;
+// chol_ret["chol_offdiag"] = chol_offdiag;
+// return chol_ret;
+
+
+
+    // Cholesky decomposition
+    // const auto cholesky_matrix = cholesky_tridiagonal(omega_diag, omega_offdiag);
+    // const arma::vec& chol_diag = cholesky_matrix.chol_diag;
+    // const arma::vec& chol_offdiag = cholesky_matrix.chol_offdiag;
+    // 
+    // // Solution of Chol*x = covector ("forward algorithm")
+    // arma::vec htmp = forward_algorithm(chol_diag, chol_offdiag, covector);
+    // htmp.transform( [](const double h_elem) -> double { return h_elem + R::norm_rand(); });
+    // 
+    // // Solution of (Chol')*x = htmp ("backward algorithm")
+    // const arma::vec hnew = backward_algorithm(chol_diag, chol_offdiag, htmp);
+    // 
+    // return {hnew[0], hnew.tail(T)};
+
+
+// // [[Rcpp::export]]
+// arma::vec draw_latent(
+//         const arma::vec& data,
+//         const double mu,
+//         const double phi,
+//         const double sigma,
+//         const arma::uvec& r,
+//         const arma::vec& mix_mean,
+//         const arma::vec& mix_varinv){
+//     // const PriorSpec& prior_spec,
+//     // const ExpertSpec_FastSV& expert){
+//     const arma::vec& y = data;  // rename
+//     const unsigned int T = y.n_elem;
+//     
+//     double omega_offdiag;  // contains off-diag element of precision matrix (const)
+//     arma::vec omega_diag(T+1),  // contains diagonal elements of precision matrix
+//     covector(T+1);  // holds covector (see McCausland et al. 2011)
+//     const double sigma2 = std::pow(sigma, 2),
+//         sigma2inv = 1. / sigma2,
+//         // Bh0inv = determine_Bh0inv(phi, prior_spec);
+//         Bh0inv = (1- std::pow(phi, 2));
+//     
+//     const double phi2 = std::pow(phi, 2);
+//     omega_diag[0] = (Bh0inv + phi2) * sigma2inv;
+//     covector[0] = mu * (Bh0inv - phi*(1-phi)) * sigma2inv;
+//     
+//     for (unsigned int j = 1; j < T; j++) {
+//         omega_diag[j] = mix_varinv[r[j-1]] + (1+phi2)*sigma2inv; 
+//         covector[j] = (data[j-1] - mix_mean[r[j-1]])*mix_varinv[r[j-1]]
+//         + mu*(1-phi)*(1-phi)*sigma2inv;
+//     }
+//     omega_diag[T] = mix_varinv[r[T-1]] + sigma2inv;
+//     covector[T] = (data[T-1] - mix_mean[r[T-1]])*mix_varinv[r[T-1]] + mu*(1-phi)*sigma2inv;
+//     omega_offdiag = -phi*sigma2inv;
+//     
+//     // Cholesky decomposition
+//     const auto cholesky_matrix = cholesky_tridiagonal(omega_diag, omega_offdiag);
+//     const arma::vec& chol_diag = cholesky_matrix.chol_diag;
+//     const arma::vec& chol_offdiag = cholesky_matrix.chol_offdiag;
+// 
+//     // Solution of Chol*x = covector ("forward algorithm")
+//     arma::vec htmp = forward_algorithm(chol_diag, chol_offdiag, covector);
+//     htmp.transform( [](const double h_elem) -> double { return h_elem + R::norm_rand(); });
+// 
+//     // Solution of (Chol')*x = htmp ("backward algorithm")
+//     const arma::vec hnew = backward_algorithm(chol_diag, chol_offdiag, htmp);
+// 
+//     return {hnew[0], hnew.tail(T)};
+//     
+//     
+//     
+//     
+//     
+// }
+
+
+
+
+
+
+
+
+
+
+
+

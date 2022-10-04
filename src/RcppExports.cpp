@@ -92,6 +92,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// draw_latent_1
+Rcpp::List draw_latent_1(const arma::vec& data, const double mu, const double phi, const double sigma, const arma::uvec& r, const arma::vec& mix_mean, const arma::vec& mix_varinv);
+RcppExport SEXP _shrinksv_draw_latent_1(SEXP dataSEXP, SEXP muSEXP, SEXP phiSEXP, SEXP sigmaSEXP, SEXP rSEXP, SEXP mix_meanSEXP, SEXP mix_varinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< const double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const double >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< const double >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mix_mean(mix_meanSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mix_varinv(mix_varinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(draw_latent_1(data, mu, phi, sigma, r, mix_mean, mix_varinv));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_shrinksv_rcpparma_hello_world", (DL_FUNC) &_shrinksv_rcpparma_hello_world, 0},
@@ -101,6 +118,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_shrinksv_cholesky_tridiagonal", (DL_FUNC) &_shrinksv_cholesky_tridiagonal, 2},
     {"_shrinksv_forward_algorithm", (DL_FUNC) &_shrinksv_forward_algorithm, 3},
     {"_shrinksv_backward_algorithm", (DL_FUNC) &_shrinksv_backward_algorithm, 3},
+    {"_shrinksv_draw_latent_1", (DL_FUNC) &_shrinksv_draw_latent_1, 7},
     {NULL, NULL, 0}
 };
 
