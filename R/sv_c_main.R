@@ -1,9 +1,11 @@
 sv_c_main <- function(y, draws, burnin , thinpara ,  prior_spec, startpara, startlatent, expert
                       ){
+  
     #set.seed(1)
     #log_data2_normal, mu, phi, sigma, h0, h, r, prior_spec, expert
     Ttot <- length(y)
     data <- log(y^2)
+    
     # number of MCMC draws
     niter = burnin + draws
 
@@ -42,7 +44,6 @@ sv_c_main <- function(y, draws, burnin , thinpara ,  prior_spec, startpara, star
     for( i in 1:niter){
     
       # Step (c): sample indicators
-     
       r <- sample_r(data , h , mix_prob , mix_mean , mix_var)
 
       # Step (a): sample the latent volatilities h:
@@ -64,13 +65,13 @@ sv_c_main <- function(y, draws, burnin , thinpara ,  prior_spec, startpara, star
       
       # Step (b): sample mu, phi, sigma
       parameter_draw <- sample_theta(mu, phi, sigma, h0, h, prior_spec,expert = expert )
-      #time ~0.00494504 secs
       mu <-  parameter_draw$mu
       phi <- parameter_draw$phi
       sigma <- parameter_draw$sigma
       #print("done sampling para")
-      if(i > burnin){
+      
       # Storing
+      if(i > burnin){
       para_store[i-burnin,1] <- parameter_draw$mu
       para_store[i-burnin,2] <- parameter_draw$phi
       para_store[i-burnin,3] <- parameter_draw$sigma
