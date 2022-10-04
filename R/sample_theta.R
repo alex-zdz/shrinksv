@@ -145,7 +145,7 @@ sample_theta <- function(mu, phi, sigma, h0, h,  prior_spec ,expert){
     #   chi_sig2 <- chi_sig2 + ((h[t]-mu)-phi*(h[t-1]-mu))^2
     # }
     psi_sig2 <- 2*prior_spec$sigma2_gamma_rate
-    sigma_prop <- rgig(n=1, lambda=lambda_sig2, chi=chi_sig2, psi=psi_sig2)
+    sigma_prop <- GIGrvg::rgig(n=1, lambda=lambda_sig2, chi=chi_sig2, psi=psi_sig2)
     
     # not working yet:
     # try using the old method
