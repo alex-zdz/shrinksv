@@ -1,0 +1,22 @@
+---
+title: "MCMC Sampling for an AR - 1 model"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The AR - 1 model
+This document serves as an overview for both the derivation of the necessary formulas as well as their implementation as code in R. We start by giving the definition of an AR-1 model:
+\begin{align*}
+y_t = \mu + \phi(y_{t-1} - \mu) + e_t, \quad e_t \sim N(0, \sigma)
+\end{align*}
+We can simulate data from this model as follows 
+
+
+or equivalently\begin{align*}
+&y_t = \mu( 1 - \phi) + \phi( y_{t-1}) + e_t \quad e_t \sim N(0, \sigma)\\
+&y_t = \beta_0 + x_t\beta_1 + e_t
+\end{align*}
+The second representation is useful as it has the same structure as a common regression model where the predictive variable is $y_{t-1}$, the intercept $\beta_0 = \mu( 1 - \phi)$ and $\beta_1 = \phi$. Using this fact, we can employ the usual conjugate priors for all parameters and build our Gibbs sampler on the well known full conditionals:
